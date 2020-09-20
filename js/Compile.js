@@ -36,7 +36,6 @@ class Complie {
     // 匹配差值表达式
     let reg = /\{\{(.+?)\}\}/
     let value = node.textContent
-    console.log('value ----->', value)
     if (reg.test(value)) {
       // 获取第一个分组内容
       let key = RegExp.$1.trim()
@@ -46,7 +45,33 @@ class Complie {
 
   // 编译元素节点，处理指令
   compileElement(node) {
+    // 遍历所有的属性节点，判断是否是指令
+    Array.from(node.attributes).forEach(a => {
+      let attrName = a.name
+      if(this.isDirective(attrName)) {
+        // 去掉前缀 v-
+        attrName = attrName.substr(2)
+        let key = a.value
+        this.update(node, key, attrName)
+      }
+    })
+  }
 
+  // 调用指令的方式
+  update(node, key, attrName) {
+    // 这种写法可扩展，已经简写代码量，少了很多的if else 语句
+    let updateFn = this[attrName + 'Updater']
+    updateFn && updateFn(node, this.vm[key])
+  }
+
+  // 处理 v-text 指令
+  textUpdater(node, value) {
+    node.textContent = value
+  }
+
+  // 处理 v-model 指令
+  modelUpdater(node, value) {
+    node.value = value
   }
 
   // 判断元素属性是否为指令，只需判断是否以 v- 开头
