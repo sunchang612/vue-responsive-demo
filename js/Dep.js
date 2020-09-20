@@ -1,3 +1,8 @@
+/** 
+ * Dep
+ * 收集依赖
+ * 发送通知
+ */
 class Dep {
   constructor() {
     // 存储所有的观察者

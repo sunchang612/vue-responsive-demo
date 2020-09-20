@@ -40,6 +40,11 @@ class Complie {
       // 获取第一个分组内容
       let key = RegExp.$1.trim()
       node.textContent = value.replace(reg, this.vm[key])
+
+      // 创建 watcher 对象，数据改变更新视图
+      new Watcher(this.vm, key, (newValue) => {
+        node.textContent = newValue
+      })
     }
   }
 
@@ -61,17 +66,24 @@ class Complie {
   update(node, key, attrName) {
     // 这种写法可扩展，已经简写代码量，少了很多的if else 语句
     let updateFn = this[attrName + 'Updater']
-    updateFn && updateFn(node, this.vm[key])
+    // 这里要改变 this 的指向，否则找不到 this.vm
+    updateFn && updateFn.call(this, node, key, this.vm[key])
   }
 
   // 处理 v-text 指令
-  textUpdater(node, value) {
+  textUpdater(node, key, value) {
     node.textContent = value
+    new Watcher(this.vm, key, (newValue) => {
+      node.textContent = newValue
+    })
   }
 
   // 处理 v-model 指令
-  modelUpdater(node, value) {
+  modelUpdater(node, key, value) {
     node.value = value
+    new Watcher(this.vm, key, (newValue) => {
+      node.value = newValue
+    })
   }
 
   // 判断元素属性是否为指令，只需判断是否以 v- 开头
