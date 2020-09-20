@@ -12,5 +12,16 @@
     <h2 v-text="count">{{count}}</h2>
     <input type="text" v-model="msg">
   </div>
+  <script src="./js/Vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        msg: 'learn Vue',
+        count: 100
+      }
+    })
+    console.log(vm)
+  </script>
 </body>
 </html>
