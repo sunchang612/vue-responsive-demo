@@ -84,6 +84,10 @@ class Complie {
     new Watcher(this.vm, key, (newValue) => {
       node.value = newValue
     })
+    // 双向绑定
+    node.addEventListener('input', () => {
+      this.vm[key] = node.value
+    })
   }
 
   // 判断元素属性是否为指令，只需判断是否以 v- 开头
