@@ -23,11 +23,15 @@ class Observer {
 
   // 定义响应式数据
   defineReactive(obj, key, val) {
+    // 负责收集依赖，并发送通过
+    let dep = new Dep
     // 如果 val 是对象，把对象类型数据转换成响应式数据
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: true,
       get() {
+        // 收集依赖
+        Dep.target && dep.addSub(Dep.target)
         return val
       },
       // 使用箭头函数改变 this 的指向
@@ -37,6 +41,7 @@ class Observer {
         // 当前属性重新 set 的时候，如果是 Object 类型，让里面的属性变成响应式数据
         this.walk(val)
         // 发送通知
+        dep.notify()
       }
     })
   }
